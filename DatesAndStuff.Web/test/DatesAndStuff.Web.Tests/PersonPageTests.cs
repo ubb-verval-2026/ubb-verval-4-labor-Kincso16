@@ -33,8 +33,8 @@ public class PersonPageTests
         var startInfo = new ProcessStartInfo
         {
             FileName = "dotnet",
-            //Arguments = $"run --project \"{webProjectPath}\"",
-            Arguments = "dotnet run --no-build",
+            Arguments = $"run --project \"{webProjectPath}\"",
+            //Arguments = "dotnet run --no-build",
             WorkingDirectory = webProjFolderPath,
             RedirectStandardOutput = true,
             RedirectStandardError = true,
@@ -136,7 +136,10 @@ public class PersonPageTests
     }
 
     [Test]
-    public void Person_SalaryIncrease_ShouldShowErrors_WhenPercentageBelowMinusTen()
+    [TestCase(-20)]
+    [TestCase(-10)]
+    [TestCase(-11)]
+    public void Person_SalaryIncrease_ShouldShowErrors_WhenPercentageBelowMinusTen(double percentage)
     {
         driver.Navigate().GoToUrl(BaseURL);
 
@@ -150,10 +153,10 @@ public class PersonPageTests
         var inputLocator = By.XPath("//*[@data-test='SalaryIncreasePercentageInput']");
         wait.Until(ExpectedConditions.ElementIsVisible(inputLocator));
 
-        // Enter invalid value (-11)
+        // Enter invalid value
         var input = wait.Until(ExpectedConditions.ElementIsVisible(inputLocator));
         input.Clear();
-        input.SendKeys("-11");
+        input.SendKeys(percentage.ToString());
 
         // Submit
         wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//*[@data-test='SalaryIncreaseSubmitButton']"))).Click();
