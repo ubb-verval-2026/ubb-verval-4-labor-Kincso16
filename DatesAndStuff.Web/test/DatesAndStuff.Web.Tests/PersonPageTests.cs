@@ -135,6 +135,41 @@ public class PersonPageTests
         salaryAfterSubmission.Should().BeApproximately(expectedSalary, 0.001);
     }
 
+    [Test]
+    public void Person_SalaryIncrease_ShouldShowErrors_WhenPercentageBelowMinusTen()
+    {
+        driver.Navigate().GoToUrl(BaseURL);
+
+        // Wait for the app to load
+        var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(5));
+
+        // Navigate to Person page
+        wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//*[@data-test='PersonPageNavigation']"))).Click();
+
+        // Wait for the page to load
+        var inputLocator = By.XPath("//*[@data-test='SalaryIncreasePercentageInput']");
+        wait.Until(ExpectedConditions.ElementIsVisible(inputLocator));
+
+        // Enter invalid value (-11)
+        var input = wait.Until(ExpectedConditions.ElementIsVisible(inputLocator));
+        input.Clear();
+        input.SendKeys("-11");
+
+        // Submit
+        wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//*[@data-test='SalaryIncreaseSubmitButton']"))).Click();
+
+        // 1) Validation summary (top of page)
+        var summaryError = wait.Until(ExpectedConditions.ElementIsVisible(
+            By.CssSelector("li.validation-message")));
+        summaryError.Text.Should().Contain("between -10");
+
+        // 2) Field-level error (under the input)
+        var fieldError = wait.Until(ExpectedConditions.ElementIsVisible(
+            By.CssSelector("div.validation-message")));
+        fieldError.Text.Should().Contain("between -10");
+    }
+
+
     private bool IsElementPresent(By by)
     {
         try
