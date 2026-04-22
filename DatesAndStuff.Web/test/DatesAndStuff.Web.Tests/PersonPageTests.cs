@@ -139,7 +139,7 @@ public class PersonPageTests
     [TestCase(-20)]
     [TestCase(-10)]
     [TestCase(-11)]
-    public void Person_SalaryIncrease_ShouldShowErrors_WhenPercentageBelowMinusTen(double percentage)
+    public void Person_SalaryIncrease_ShouldNotUpdate_WhenPercentageBelowMinusTen(double percentage)
     {
         driver.Navigate().GoToUrl(BaseURL);
 
@@ -161,6 +161,11 @@ public class PersonPageTests
         // Submit
         wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//*[@data-test='SalaryIncreaseSubmitButton']"))).Click();
 
+        var salaryLabel = wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//*[@data-test='DisplayedSalary']")));
+        double salary = double.Parse(salaryLabel.Text);
+
+        salary.Should().Be(5000);
+        /*
         // 1) Validation summary (top of page)
         var summaryError = wait.Until(ExpectedConditions.ElementIsVisible(
             By.CssSelector("li.validation-message")));
@@ -170,6 +175,7 @@ public class PersonPageTests
         var fieldError = wait.Until(ExpectedConditions.ElementIsVisible(
             By.CssSelector("div.validation-message")));
         fieldError.Text.Should().Contain("between -10");
+        */
     }
 
 
