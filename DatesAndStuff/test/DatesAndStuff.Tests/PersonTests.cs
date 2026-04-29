@@ -52,7 +52,7 @@ public class PersonTests
         try { task.Wait(); } catch { }
 
         // Assert
-        Assert.IsTrue(task.IsFaulted);
+        Assert.That(task.IsFaulted, Is.True);
     }
 
     [Test]
@@ -96,18 +96,47 @@ public class PersonTests
     [Test]
     public void IncreaseSalary_ZeroPercentIncrease_ShouldNotChange()
     {
-        // throw new NotImplementedException();
+        // Arrange
+        Person sut = PersonFactory.CreateTestPerson();
+
+        // Act
+        sut.IncreaseSalary(0);
+
+        // Assert
+        sut.Salary.Should().Be(5000);
+    }
+
+
+    [Test]
+    [TestCase(-1, 4950)]
+    [TestCase(-9, 4550)]
+    [TestCase(-5, 4750)]
+    public void IncreaseSalary_NegativeIncrease_ShouldDecrease(double percentage, double expectedSalary)
+    {
+        // Arrange
+        Person sut = PersonFactory.CreateTestPerson();
+
+        // Act
+        sut.IncreaseSalary(percentage);
+
+        // Assert
+        sut.Salary.Should().BeApproximately(expectedSalary, 0.001);
     }
 
     [Test]
-    public void IncreaseSalary_NegativeIncrease_ShouldDecrease()
+    [TestCase(-20)]
+    [TestCase(-10)]
+    [TestCase(-11)]
+    public void IncreaseSalary_SmallerThanMinusTenPerc_ShouldFail(double percentage)
     {
-        // throw new NotImplementedException();
+        // Arrange
+        Person sut = PersonFactory.CreateTestPerson();
+
+        // Act
+        Action act = () => sut.IncreaseSalary(percentage);
+
+        // Assert
+        act.Should().Throw<ArgumentOutOfRangeException>();
     }
 
-    [Test]
-    public void IncreaseSalary_SmallerThanMinusTenPerc_ShouldFail()
-    {
-        // throw new NotImplementedException();
-    }
 }

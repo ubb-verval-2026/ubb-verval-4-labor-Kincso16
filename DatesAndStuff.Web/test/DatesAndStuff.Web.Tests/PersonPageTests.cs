@@ -33,8 +33,8 @@ public class PersonPageTests
         var startInfo = new ProcessStartInfo
         {
             FileName = "dotnet",
-            //Arguments = $"run --project \"{webProjectPath}\"",
-            Arguments = "dotnet run --no-build",
+            Arguments = $"run --project \"{webProjectPath}\"",
+            //Arguments = "dotnet run --no-build",
             WorkingDirectory = webProjFolderPath,
             RedirectStandardOutput = true,
             RedirectStandardError = true,
@@ -98,28 +98,87 @@ public class PersonPageTests
     }
 
     [Test]
-    public void Person_SalaryIncrease_ShouldIncrease()
+    [TestCase(0, 5000)]
+    [TestCase(5, 5250)]
+    [TestCase(10, 5500)]
+    [TestCase(20, 6000)]
+    public void Person_SalaryIncrease_ShouldIncrease(double percentage, double expectedSalary)
     {
-        // Arrange
         driver.Navigate().GoToUrl(BaseURL);
-        driver.FindElement(By.XPath("//*[@data-test='PersonPageNavigation']")).Click();
 
+        // Wait for the app to load
         var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(5));
 
-        var input = wait.Until(ExpectedConditions.ElementExists(By.XPath("//*[@data-test='SalaryIncreasePercentageInput']")));
-        input.Clear();
-        input.SendKeys("5");
+        // Navigate to Person page
+        wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//*[@data-test='PersonPageNavigation']"))).Click();
 
-        // Act
-        var submitButton = wait.Until(ExpectedConditions.ElementExists(By.XPath("//*[@data-test='SalaryIncreaseSubmitButton']")));
-        submitButton.Click();
+        // Wait for page to stabilize
+        wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//*[@data-test='SalaryIncreasePercentageInput']")));
 
+        var inputLocator = By.XPath("//*[@data-test='SalaryIncreasePercentageInput']");
 
-        // Assert
-        var salaryLabel = wait.Until(ExpectedConditions.ElementExists(By.XPath("//*[@data-test='DisplayedSalary']")));
+        // Clear input
+        wait.Until(ExpectedConditions.ElementIsVisible(inputLocator)).Clear();
+
+        // Type percentage
+        wait.Until(ExpectedConditions.ElementIsVisible(inputLocator))
+            .SendKeys(percentage.ToString());
+
+        // Submit
+        wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//*[@data-test='SalaryIncreaseSubmitButton']"))).Click();
+
+        // Wait for updated salary to appear
+        var salaryLabel = wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//*[@data-test='DisplayedSalary']")));
+
         var salaryAfterSubmission = double.Parse(salaryLabel.Text);
-        salaryAfterSubmission.Should().BeApproximately(5250, 0.001);
+
+        salaryAfterSubmission.Should().BeApproximately(expectedSalary, 0.001);
     }
+
+    [Test]
+    [TestCase(-20)]
+    [TestCase(-10)]
+    [TestCase(-11)]
+    public void Person_SalaryIncrease_ShouldNotUpdate_WhenPercentageBelowMinusTen(double percentage)
+    {
+        driver.Navigate().GoToUrl(BaseURL);
+
+        // Wait for the app to load
+        var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(5));
+
+        // Navigate to Person page
+        wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//*[@data-test='PersonPageNavigation']"))).Click();
+
+        // Wait for the page to load
+        var inputLocator = By.XPath("//*[@data-test='SalaryIncreasePercentageInput']");
+        wait.Until(ExpectedConditions.ElementIsVisible(inputLocator));
+
+        // Enter invalid value
+        var input = wait.Until(ExpectedConditions.ElementIsVisible(inputLocator));
+        input.Clear();
+        input.SendKeys(percentage.ToString());
+
+        // Submit
+        wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//*[@data-test='SalaryIncreaseSubmitButton']"))).Click();
+
+        var salaryLabel = wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//*[@data-test='DisplayedSalary']")));
+        double salary = double.Parse(salaryLabel.Text);
+
+        salary.Should().Be(5000);
+        /*
+        // 1) Validation summary (top of page)
+        var summaryError = wait.Until(ExpectedConditions.ElementIsVisible(
+            By.CssSelector("li.validation-message")));
+        summaryError.Text.Should().Contain("between -10");
+
+        // 2) Field-level error (under the input)
+        var fieldError = wait.Until(ExpectedConditions.ElementIsVisible(
+            By.CssSelector("div.validation-message")));
+        fieldError.Text.Should().Contain("between -10");
+        */
+    }
+
+
     private bool IsElementPresent(By by)
     {
         try

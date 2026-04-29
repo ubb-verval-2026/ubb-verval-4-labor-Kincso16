@@ -21,7 +21,7 @@
 
             return new Person("Test Pista",
              new EmploymentInformation(
-                 54,
+                 5000,
                  new Employer("RO1234567", "Valami city valami hely", "Dagobert bacsi", new List<int>() { 6201, 7210 })),
              new TestPaymentService(),
              new LocalTaxData("4367558"),
