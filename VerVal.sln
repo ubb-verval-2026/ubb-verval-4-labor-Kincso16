@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.12.35514.174
+# Visual Studio Version 18
+VisualStudioVersion = 18.3.11312.210
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DatesAndStuff", "DatesAndStuff\src\DatesAndStuff\DatesAndStuff.csproj", "{4B0B8ACE-6E87-4FE3-8873-F186C5FF66E8}"
 EndProject
@@ -15,6 +15,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DatesAndStuff.Web", "DatesAndStuff.Web\src\DatesAndStuff.Web\DatesAndStuff.Web.csproj", "{58DB5A33-6BE1-E8C2-C310-FBDAC3C43980}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DatesAndStuff.Web.Tests", "DatesAndStuff.Web\test\DatesAndStuff.Web.Tests\DatesAndStuff.Web.Tests.csproj", "{3D0F5EE0-770D-49FE-85C1-C02A570A8A34}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazeDemo.Tests", "WizzAir.Tests\BlazeDemo.Tests.csproj", "{CA7CDC8E-0EEE-4075-B28E-D9CCF071CE84}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -38,6 +40,10 @@ Global
 		{3D0F5EE0-770D-49FE-85C1-C02A570A8A34}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3D0F5EE0-770D-49FE-85C1-C02A570A8A34}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3D0F5EE0-770D-49FE-85C1-C02A570A8A34}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CA7CDC8E-0EEE-4075-B28E-D9CCF071CE84}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CA7CDC8E-0EEE-4075-B28E-D9CCF071CE84}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CA7CDC8E-0EEE-4075-B28E-D9CCF071CE84}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CA7CDC8E-0EEE-4075-B28E-D9CCF071CE84}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
